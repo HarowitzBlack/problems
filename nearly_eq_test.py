@@ -3,6 +3,7 @@ from nearly_equal import nearly_eq
 
 
 class TestClass():
+    # insert tests
     def test_insertion1(self):
         assert nearly_eq("jack","jacky") == True
 
@@ -15,6 +16,7 @@ class TestClass():
     def test_insertion_false(self):
         assert nearly_eq("pearl","ruby") == False
 
+    # replace test
     def test_replacing1(self):
         assert nearly_eq("python","pithon") == True
 
@@ -27,6 +29,7 @@ class TestClass():
     def test_replacing_false(self):
         assert nearly_eq("kite","kitty") == False
 
+    # delete tests
     def test_deleting1(self):
         assert nearly_eq("joel","joe") == True
 
@@ -39,6 +42,20 @@ class TestClass():
     def test_deleting_false(self):
         assert nearly_eq("woman","man") == False
 
+    # swap tests
+    def test_swapping1(self):
+        assert nearly_eq("mumble","humble") == True
+
+    def test_swapping2(self):
+        assert nearly_eq("heizenberg","hiezenberg") == True
+
+    def test_swapping3(self):
+        assert nearly_eq("facebook","facbeook") == True
+
+    def test_swapping_false(self):
+        assert nearly_eq("monkey","mnkoey") == False
+
+    # other tests
     def test_other1(self):
         assert nearly_eq("burger","burgler") == True
 
@@ -49,4 +66,5 @@ class TestClass():
         assert nearly_eq("dumbledore","bumbledore") == True
 
     def test_other4(self):
-        assert nearly_eq("apple","appler") == True
+        # dude's my friend ;)
+        assert nearly_eq("adnan","adnam") == True

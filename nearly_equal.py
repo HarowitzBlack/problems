@@ -9,8 +9,7 @@
 
 
 def check_for_inserted_char(string1,string2):
-    """ When they are sorted it's easier to figure out
-        what's been inserted to a string.
+    """ funtion to check inserted chars
 
         Find a score for each string and also the excess characters
         if a char from str1 is in str2 add 1 to the score
@@ -43,8 +42,7 @@ def check_for_inserted_char(string1,string2):
 
 
 def check_for_replaced_char(string1, string2):
-    """ Same algo as above but here we take the score and
-        discard the excess char(s)
+    """ function to check replaced char
     """
     string1,string2 = list(string1),list(string2)
     score = 0
@@ -67,12 +65,9 @@ def check_for_replaced_char(string1, string2):
 
 
 def check_for_deleted_char(string1, string2):
-    """ loop through str2 and check if it's in str1
-
-        does not work for repeating chars
-        same for all the above functions
-        damn you!!!
+    """ function to check deleted char
     """
+    # keeps track of the missing char
     missing_char_count = 0
     new_str = ''
     for x in string1:
@@ -81,13 +76,28 @@ def check_for_deleted_char(string1, string2):
         else:
             new_str += x
 
+    # using the check_for_inserted_char() to check for any inserted char
+    # in the new string
     res = check_for_inserted_char(string2,new_str)
     if res and missing_char_count <= 1:
         return True
     return False
 
+def check_for_swapped_char(string1,string2):
+    """ function to check swapped char
+    """
+    excess_char = 0
+    for x,y in zip(string1,string2):
+        if x != y:
+            excess_char += 1
 
-functions = [check_for_inserted_char,check_for_replaced_char,check_for_deleted_char]
+    if excess_char == 2:
+        return True
+    return False
+
+
+
+functions = [check_for_inserted_char,check_for_replaced_char,check_for_deleted_char,check_for_swapped_char]
 
 
 def nearly_eq(string1, string2):
@@ -102,7 +112,3 @@ def nearly_eq(string1, string2):
             if res:
                 return res
         return False
-
-
-#nq = nearly_eq("dumbledore","bumbledore")
-#print(nq)
