@@ -1,0 +1,179 @@
+This is interesting, but there are a number of annoyances with this approach. For one,
+even though you get the convenience of a class-like interface, the code is rather verbose
+and requires the user to specify a lot of low-level detail (e.g., repeated uses of Struct
+Field , specification of offsets, etc.). The resulting class is also missing common con‐
+veniences such as providing a way to compute the total size of the structure.
+Any time you are faced with class definitions that are overly verbose like this, you might
+consider the use of a class decorator or metaclass. One of the features of a metaclass is
+that it can be used to fill in a lot of low-level implementation details, taking that burden
+off of the user. As an example, consider this metaclass and slight reformulation of the
+Structure class
+As noted, the use of a memoryview() in the solution serves a useful role in avoiding
+memory copies. When structures start to nest, memoryviews can be used to overlay
+different parts of the structure definition on the same region of memory. This aspect of
+the solution is subtle, but it concerns the slicing behavior of a memoryview versus a
+normal byte array. If you slice a byte string or byte array, you usually get a copy of the
+data. Not so with a memoryview—slices simply overlay the existing memory. Thus, this
+approach is more efficient.
+A number of related recipes will help expand upon the topics used in the solution. See
+Recipe 8.13 for a closely related recipe that uses descriptors to build a type system.
+Recipe 8.10 has information about lazily computed properties and is related to the
+implementation of the NestedStruct descriptor. Recipe 9.19 has an example of using a
+metaclass to initialize class members, much in the same manner as the StructureMe
+ta class. The source code for Python’s ctypes library may also be of interest, due to its
+similar support for defining data structures, nesting of data structures, and similar
+functionality.
+The last part of this recipe is something that’s rather subtle—a function that tests to see
+whether a value (any value) has been supplied to an optional argument or not. The tricky
+part here is that you can’t use a default value of None , 0 , or False to test for the presence
+of a user-supplied argument (since all of these are perfectly valid values that a user might
+supply). Thus, you need something else to test against.
+To solve this problem, you can create a unique private instance of object , as shown in
+the solution (the _no_value variable). In the function, you then check the identity of
+the supplied argument against this special value to see if an argument was supplied or
+not. The thinking here is that it would be extremely unlikely for a user to pass the
+_no_value instance in as an input value. Therefore, it becomes a safe value to check
+against if you’re trying to determine whether an argument was supplied or not.
+The use of object() might look rather unusual here. object is a class that serves as the
+common base class for almost all objects in Python. You can create instances of ob
+ject , but they are wholly uninteresting, as they have no notable methods nor any in‐
+stance data (because there is no underlying instance dictionary, you can’t even set any
+attributes). About the only thing you can do is perform tests for identity. This makes
+them useful as special values, as shown in the solution.
+Software based on callback functions often runs the risk of turning into a huge tangled
+mess. Part of the issue is that the callback function is often disconnected from the code
+that made the initial request leading to callback execution. Thus, the execution envi‐
+ronment between making the request and handling the result is effectively lost. If you
+want the callback function to continue with a procedure involving multiple steps, you
+have to figure out how to save and restore the associated state.
+There are really two main approaches that are useful for capturing and carrying state.
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+Software based on callback functions often runs the risk of turning into a huge tangled
+mess. Part of the issue is that the callback function is often disconnected from the code
+that made the initial request leading to callback execution. Thus, the execution envi‐
+ronment between making the request and handling the result is effectively lost. If you
+want the callback function to continue with a procedure involving multiple steps, you
+have to figure out how to save and restore the associated state.
+There are really two main approaches that are useful for capturing and carrying state.
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+######################################################################################
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+Software based on callback functions often runs the risk of turning into a huge tangled
+mess. Part of the issue is that the callback function is often disconnected from the code
+that made the initial request leading to callback execution. Thus, the execution envi‐
+ronment between making the request and handling the result is effectively lost. If you
+want the callback function to continue with a procedure involving multiple steps, you
+have to figure out how to save and restore the associated state.
+There are really two main approaches that are useful for capturing and carrying state.
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+######################################################################################
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+Software based on callback functions often runs the risk of turning into a huge tangled
+mess. Part of the issue is that the callback function is often disconnected from the code
+that made the initial request leading to callback execution. Thus, the execution envi‐
+ronment between making the request and handling the result is effectively lost. If you
+want the callback function to continue with a procedure involving multiple steps, you
+have to figure out how to save and restore the associated state.
+There are really two main approaches that are useful for capturing and carrying state.
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+######################################################################################
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+Software based on callback functions often runs the risk of turning into a huge tangled
+mess. Part of the issue is that the callback function is often disconnected from the code
+that made the initial request leading to callback execution. Thus, the execution envi‐
+ronment between making the request and handling the result is effectively lost. If you
+want the callback function to continue with a procedure involving multiple steps, you
+have to figure out how to save and restore the associated state.
+There are really two main approaches that are useful for capturing and carrying state.
+You can carry it around on an instance (attached to a bound method perhaps) or you
+can carry it around in a closure (an inner function). Of the two techniques, closures are
+perhaps a bit more lightweight and natural in that they are simply built from functions.
+They also automatically capture all of the variables being used. Thus, it frees you from
+having to worry about the exact state needs to be stored (it’s determined automatically
+from your code).
+If using closures, you need to pay careful attention to mutable variables. In the solution,
+the nonlocal declaration is used to indicate that the sequence variable is being modified
+from within the callback. Without this declaration, you’ll get an error.
+The use of a coroutine as a callback handler is interesting in that it is closely related to
+the closure approach. In some sense, it’s even cleaner, since there is just a single function.
+Moreover, variables can be freely modified without worrying about nonlocal declara‐
+######################################################################################
+$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+##################ENDOFTHEFILE#########################################################
